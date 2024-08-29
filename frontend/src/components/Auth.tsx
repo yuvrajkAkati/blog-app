@@ -7,7 +7,7 @@ export const Auth = ()=>{
     const [password,setPassword] = useState("")
     const [email,setEmail] = useState("")
     
-    return <div className="flex justify-center flex-col h-screen">
+    return (<div className="flex justify-center flex-col h-screen">
         <div className="flex justify-center">
             <div className="flex justify-center w-8/12">
                 <div>
@@ -19,7 +19,7 @@ export const Auth = ()=>{
                             Already have an account? 
                         </div>
                         <div className="text-center text-slate-400 pl-1">
-                            <Link to={'/signup'} className="underline">login</Link>
+                            <Link to={'/signin'} className="underline">login</Link>
                         </div>
                     </div>
                     <div className="font-semibold py-3">
@@ -50,5 +50,5 @@ export const Auth = ()=>{
                 </div>
             </div>
         </div>
-    </div>
+    </div>)
 }

@@ -2,6 +2,6 @@
 
 export const Blog = ()=>{
     return <div>
-    blog
+        blog
     </div>
 }
