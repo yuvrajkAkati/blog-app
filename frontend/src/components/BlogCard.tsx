@@ -57,7 +57,7 @@ export function BlogCard({authorName , publishedDate , heading ,body , minutesRe
         )
 }
 
-function ImageProvider(){
+ function ImageProvider(){
     return (
         <div className=" w-64 grid place-items-center">
                     <div className="">
