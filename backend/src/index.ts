@@ -3,6 +3,8 @@ import {sign , verify} from 'hono/jwt'
 import { Prisma, PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { use } from 'hono/jsx'
+import { cors } from 'hono/cors'
+import { parseBody } from 'hono/utils/body'
 
 const app = new Hono<{
   Bindings : {
@@ -14,10 +16,12 @@ const app = new Hono<{
   }
 }>()
 
+app.use(cors())
 
 
 app.use('/api/v1/blog/*',async (c,next)=>{
-  const token  =  c.req.header('Authorization') || ""
+  const jwt  =  c.req.header('Authorization') || ""
+  const token = jwt.split(" ")[1]
   try {
     const user  = await verify(token,c.env.JWT_SECRET)
     const ID : number = parseInt(user.id as string)
@@ -31,10 +35,11 @@ app.use('/api/v1/blog/*',async (c,next)=>{
     await next()
   } catch (err) {
     return c.json({
-      message  : "you are not authorized"
+      message  : "something is wrong.."
     })
   }
 })
+
 
 
 app.post('/api/v1/signup', async (c) => {
@@ -99,7 +104,8 @@ app.post('/api/v1/signin', async(c) => {
     if(user){
       const jwt = await sign({id : user.id},c.env.JWT_SECRET)
       return c.json({
-        message : `sign in successfull here is you token : ${jwt}`
+        message : `sign in successfull here is you token `,
+        token : jwt
       })
     }else{
       return c.json({
