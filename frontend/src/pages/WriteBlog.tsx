@@ -1,7 +1,20 @@
+import axios from "axios";
 import { Topbar } from "../components/Topbar";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 export function WriteBlog(){
+    const [title , setTitle] = useState('')
+    const [description, setDescription] = useState('')
+    const [ published , setPublished] = useState(true)
+
+    const navigate = useNavigate()
+
+    function goToDashboardPage(){
+        navigate('/')
+    }
+
     return (
         <div className="px-64">
             <div className="">
@@ -22,7 +35,23 @@ export function WriteBlog(){
                     <button >
                     
                     <div className="flex">
-                        <div className="rounded-xl bg-green-600 px-3 text-white text-sm "><button>publish</button></div>
+                        <div className="rounded-xl bg-green-600 px-3 text-white text-sm "><button onClick={async ()=>{
+                            
+                            ///send the autorization header together
+                          const response = await axios.post("http://127.0.0.1:8787/api/v1/blog",{
+                            title,
+                            description,
+                            published
+                          },{
+                            headers : {
+                                Authorization : localStorage.getItem('token')
+                            }
+                          })
+                          if(response.data.id){
+                            console.log(response.data.asd)
+                            goToDashboardPage()
+                          }
+                        }}>publish</button></div>
                         <div className="pr-2 hover:text-slate-600 pl-3">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
@@ -50,11 +79,15 @@ export function WriteBlog(){
                         Heading                        
                     </div>
                     <div>
-                    <div className="text-wrap"><textarea className="border w-full h-32 "></textarea></div>
+                    <div className="text-wrap"><textarea className="border w-full h-32 " onChange={(e)=>{
+                        setTitle(e.target.value)
+                    }}></textarea></div>
                     </div>
                 </div>
                 <div className="text-3xl pt-4 pb-2">Body</div>
-                <div className="text-wrap"><textarea className="border w-full h-lvh "></textarea></div>
+                <div className="text-wrap"><textarea className="border w-full h-lvh " onChange={(e)=>{
+                    setDescription(e.target.value)
+                }}></textarea></div>
             </div>
         </div>
     )

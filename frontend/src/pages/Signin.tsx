@@ -50,7 +50,7 @@ export const Signin = ()=>{
                     </div>
                     <div className="text-center pt-5 ">
                         <button className="bg-black w-full rounded h-10 text-white" onClick={async()=>{
-                            const response = await axios.post("http://127.0.0.1:8787/api/v1/signup",{
+                            const response = await axios.post("http://127.0.0.1:8787/api/v1/signin",{
                                 email : email,
                                 password : password
                             })

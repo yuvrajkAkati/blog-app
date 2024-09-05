@@ -22,12 +22,15 @@ app.use(cors())
 app.use('/api/v1/blog/*',async (c,next)=>{
   const jwt  =  c.req.header('Authorization') || ""
   const token = jwt.split(" ")[1]
+
+  //authorization headers needs to be send from the frontend request
   try {
     const user  = await verify(token,c.env.JWT_SECRET)
     const ID : number = parseInt(user.id as string)
+    
     if(!user.id){
       c.status(403)
-      return c.json({
+       c.json({
         message : 'you are not authorized'
       })
     }
@@ -69,7 +72,7 @@ app.post('/api/v1/signup', async (c) => {
     const jwt = await sign({id : user.id},c.env.JWT_SECRET)
 
     return c.json({
-      token :  jwt
+      token :  "Bearer "+ jwt
     })
   }else{
     return c.json({
@@ -105,7 +108,7 @@ app.post('/api/v1/signin', async(c) => {
       const jwt = await sign({id : user.id},c.env.JWT_SECRET)
       return c.json({
         message : `sign in successfull here is you token `,
-        token : jwt
+        token : "Bearer "+jwt
       })
     }else{
       return c.json({
@@ -125,9 +128,10 @@ app.post('/api/v1/blog', async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env?.DATABASE_URL,
 }).$extends(withAccelerate())
-
+  
   const body = await c.req.json()
-  const blog = await prisma.post.create({
+  try{
+    const blog = await prisma.post.create({
     data : {
       title : body.title,
       description : body.description,
@@ -138,6 +142,11 @@ app.post('/api/v1/blog', async (c) => {
   return c.json({
     id : blog.id
   })
+  }catch(err){
+    c.json({
+      message : "something is up...."
+    })
+  }
 })
 
 
